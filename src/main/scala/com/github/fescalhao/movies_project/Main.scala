@@ -2,6 +2,7 @@ package com.github.fescalhao.movies_project
 
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
+import Schemas.Ratings._
 
 object Main extends Serializable with App {
   @transient lazy val logger: Logger = Logger.getLogger(getClass.getName)
@@ -14,11 +15,14 @@ object Main extends Serializable with App {
     .config(sparkConf)
     .getOrCreate()
 
-  val df = spark.read
+  val ratingsDF = spark.read
     .format("csv")
     .option("header", "true")
     .option("inferSchema", "true")
-    .load("data/movies_metadata.csv")
+    .schema(getRatingsSchema)
+    .load("s3a://fescalhao-movies/bronze/ratings_small.csv")
 
-  df.show(truncate = false)
+  ratingsDF.show(truncate = false)
 }
+
+
