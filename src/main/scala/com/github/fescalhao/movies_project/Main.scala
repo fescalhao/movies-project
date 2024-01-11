@@ -1,28 +1,17 @@
 package com.github.fescalhao.movies_project
 
-import org.apache.log4j.Logger
-import org.apache.spark.sql.SparkSession
-import Schemas.Ratings._
+import com.github.fescalhao.movies_project
 
-object Main extends Serializable with App {
-  @transient lazy val logger: Logger = Logger.getLogger(getClass.getName)
+object Main extends Serializable{
 
-  logger.info("Getting Spark Configuration...")
-  val sparkConf = getSparkConf("movies")
+  private val projectPath = "com.github.fescalhao.movies_project"
+  def main(args: Array[String]): Unit = {
+    val p = Map("layer" -> "Silver")
 
-  logger.info("Initializing Spark Session...")
-  val spark: SparkSession = SparkSession.builder()
-    .config(sparkConf)
-    .getOrCreate()
+    val layerObject = movies_project.getObject(s"$projectPath.${p("entity")}")
 
-  val ratingsDF = spark.read
-    .format("csv")
-    .option("header", "true")
-    .option("inferSchema", "true")
-    .schema(getRatingsSchema)
-    .load("s3a://fescalhao-movies/bronze/ratings_small.csv")
+  }
 
-  ratingsDF.show(truncate = false)
 }
 
 
