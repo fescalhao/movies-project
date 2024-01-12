@@ -6,7 +6,6 @@ object Silver {
   def execute(params: Map[String, String]): Unit ={
 
     val classPath = getEntityClassPath(params)
-
     executeEntity(path = classPath, params)
 
   }

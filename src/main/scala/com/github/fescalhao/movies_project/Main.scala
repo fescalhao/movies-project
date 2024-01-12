@@ -6,15 +6,14 @@ object Main extends Serializable{
   def main(args: Array[String]): Unit = {
     val p = Map("layer" -> "silver", "entity" -> "Ratings")
 
-    if (p("layer") == "bronze") {
-      //TODO
-    } else if (p("layer") == "silver") {
-      Silver.execute(p)
-    } else if (p("layer") == "gold") {
-      //TODO
-    } else  {
-      throw new RuntimeException("Layer parameter is incorrect or not present")
-    }
+    executeLayer(p("layer"), p)
+  }
+
+  private def executeLayer(layer: String, params: Map[String, String]): Unit = layer match {
+    case "bronze" => //TODO
+    case "silver" => Silver.execute(params)
+    case "gold" => //TODO
+    case _ => throw new RuntimeException("Layer parameter is incorrect or not present")
   }
 
 }

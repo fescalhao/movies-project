@@ -53,9 +53,4 @@ package object movies_project {
     val projectPath = "com.github.fescalhao.movies_project"
     s"$projectPath.${params("layer")}.entities.${params("entity")}"
   }
-
-  trait MovieEntity {
-    def execute(): Unit
-    def getSchema: StructType
-  }
 }

@@ -1,12 +1,14 @@
 package com.github.fescalhao.movies_project.silver.entities
 
-import com.github.fescalhao.movies_project.{MovieEntity, getSparkConf}
+import com.github.fescalhao.movies_project.aws.s3.S3.readCSV
+import com.github.fescalhao.movies_project.getSparkConf
+import com.github.fescalhao.movies_project.traits.MovieEntity
 import org.apache.log4j.Logger
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.{DoubleType, IntegerType, LongType, StructField, StructType}
 
-class Ratings(map: Map[String, String]) extends MovieEntity {
+class Ratings(params: Map[String, String]) extends MovieEntity {
   private val logger: Logger = Logger.getLogger(getClass.getName)
   def execute(): Unit = {
     logger.info("Getting Spark Configuration for ...")
@@ -20,12 +22,9 @@ class Ratings(map: Map[String, String]) extends MovieEntity {
       .config(sparkConf)
       .getOrCreate()
 
-    val ratingsDF = spark.read
-      .format("csv")
-      .option("header", "true")
-      .option("inferSchema", "true")
-      .schema(getSchema)
-      .load("s3a://fescalhao-movies/bronze/ratings_small.csv")
+    val path = "s3a://fescalhao-movies/bronze/ratings_small.csv"
+
+    val ratingsDF = readCSV(spark, Option(getSchema), path)
 
     ratingsDF.show(truncate = false)
   }
