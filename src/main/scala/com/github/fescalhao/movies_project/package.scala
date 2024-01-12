@@ -1,7 +1,7 @@
 package com.github.fescalhao
-
 import scala.reflect.runtime.{universe => ru}
 import org.apache.spark.SparkConf
+import org.apache.spark.sql.types.StructType
 
 import java.util.Properties
 import scala.io.Source
@@ -25,7 +25,14 @@ package object movies_project {
     props
   }
 
-  def getObject(path: String) = {
+  /** Used to instantiate and execute a method through reflection using the Scala Reflection API.
+   * Reference: https://www.baeldung.com/scala/reflection-api
+   *
+   * @param path Entity class path
+   * @param methodName Name of the method to be executed in the Entity class. Defaults to "execute"
+   * @return Unit -> The execution of the method "execute" from the specific Entity class
+   */
+  def executeEntity(path: String, params: Map[String, String], methodName: String = "execute"): Any = {
     val mirror: ru.Mirror = ru.runtimeMirror(getClass.getClassLoader)
     val classSymbol: ru.ClassSymbol = mirror.classSymbol(Class.forName(path))
     val consMethodSymbol = classSymbol.primaryConstructor.asMethod
@@ -33,6 +40,22 @@ package object movies_project {
     val classMirror = mirror.reflectClass(classSymbol)
     val classConstructorMirror = classMirror.reflectConstructor(consMethodSymbol)
 
-    classConstructorMirror.apply()
+    val classInstance = classConstructorMirror.apply(params)
+    val classInstanceMirror = mirror.reflect(classInstance)
+
+    val methodSymbol = classSymbol.info.decl(ru.TermName(methodName)).asMethod
+    val method = classInstanceMirror.reflectMethod(methodSymbol)
+
+    method.apply()
+  }
+
+  def getEntityClassPath(params: Map[String, String]): String = {
+    val projectPath = "com.github.fescalhao.movies_project"
+    s"$projectPath.${params("layer")}.entities.${params("entity")}"
+  }
+
+  trait MovieEntity {
+    def execute(): Unit
+    def getSchema: StructType
   }
 }
