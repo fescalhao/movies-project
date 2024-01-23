@@ -1,21 +1,21 @@
 package com.github.fescalhao.movies_project
 
-import com.github.fescalhao.movies_project.silver.Silver
+import com.github.fescalhao.movies_project.generics.ApplicationParams
+import com.github.fescalhao.movies_project.layers.bronze.Bronze
+import com.github.fescalhao.movies_project.layers.gold.Gold
+import com.github.fescalhao.movies_project.layers.silver.Silver
+import com.github.fescalhao.movies_project.layers.traits.LayerEntity
 
 object Main extends Serializable{
+  private val layerMap: Map[String, LayerEntity] = Map(
+    "bronze" -> Bronze,
+    "silver" -> Silver,
+    "gold" -> Gold
+  )
   def main(args: Array[String]): Unit = {
-    val p = Map("layer" -> "silver", "entity" -> "Ratings")
+    val params = new ApplicationParams(args)
 
-    executeLayer(p("layer"), p)
+    val layerEntity = layerMap(params.layer())
+    layerEntity.execute(params)
   }
-
-  private def executeLayer(layer: String, params: Map[String, String]): Unit = layer match {
-    case "bronze" => //TODO
-    case "silver" => Silver.execute(params)
-    case "gold" => //TODO
-    case _ => throw new RuntimeException("Layer parameter is incorrect or not present")
-  }
-
 }
-
-

@@ -1,13 +1,16 @@
 package com.github.fescalhao
+import org.apache.log4j.Logger
+
 import scala.reflect.runtime.{universe => ru}
 import org.apache.spark.SparkConf
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.StructType
 
 import java.util.Properties
 import scala.io.Source
 
 package object movies_project {
-  def getSparkConf(configFilePath: String, appName: String): SparkConf = {
+  private def getSparkConf(configFilePath: String, appName: String): SparkConf = {
     val sparkConf = new SparkConf()
     val props: Properties = getSparkConfProperties(configFilePath)
 
@@ -20,9 +23,21 @@ package object movies_project {
 
   private def getSparkConfProperties(configFilePath: String): Properties = {
     val props = new Properties()
-    props.load(Source.fromFile(configFilePath).bufferedReader())
+    println(configFilePath)
+    props.load(Source.fromResource(configFilePath).bufferedReader())
 
     props
+  }
+
+  def getSparkSession(configFilePath: String, appName: String): SparkSession = {
+    val sparkConf: SparkConf = getSparkConf(
+      configFilePath = configFilePath,
+      appName = appName
+    )
+
+    SparkSession.builder()
+      .config(sparkConf)
+      .getOrCreate()
   }
 
   /** Used to instantiate and execute a method through reflection using the Scala Reflection API.
