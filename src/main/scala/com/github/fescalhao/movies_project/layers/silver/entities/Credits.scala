@@ -2,21 +2,11 @@ package com.github.fescalhao.movies_project.layers.silver.entities
 
 import com.github.fescalhao.movies_project.aws.s3.S3.readCSV
 import com.github.fescalhao.movies_project.generics.ApplicationParams
-import com.github.fescalhao.movies_project.getSparkSession
 import com.github.fescalhao.movies_project.layers.traits.{MovieEntity, MovieEntityObject}
-import org.apache.log4j.Logger
-import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.types.{DoubleType, IntegerType, LongType, StringType, StructField, StructType}
+import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
 
-class Credits(params: ApplicationParams) extends MovieEntity {
-  override val logger: Logger = Logger.getLogger(getClass.getName)
-
+class Credits(configFilePath: String, params: ApplicationParams) extends MasterEntity(configFilePath, params) with MovieEntity {
   override def execute(): Unit = {
-    val configFilePath = "src/main/resources/silver/spark.conf"
-
-    logger.info("Initializing Spark Session...")
-    val spark: SparkSession = getSparkSession(configFilePath, "movies_silver_credits")
-
     val path = "data/credits.csv"
     //    val path = "s3a://fescalhao-movies/bronze/credits.csv"
 
@@ -28,8 +18,8 @@ class Credits(params: ApplicationParams) extends MovieEntity {
 }
 
 object Credits extends MovieEntityObject {
-  override def apply(params: ApplicationParams): Credits = {
-    val credits = new Credits(params)
+  override def apply(configFilePath: String, params: ApplicationParams): Credits = {
+    val credits = new Credits(configFilePath, params)
     credits.schema = getSchema
     credits
   }

@@ -1,15 +1,17 @@
 package com.github.fescalhao
+
 import org.apache.log4j.Logger
 
 import scala.reflect.runtime.{universe => ru}
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.types.StructType
 
 import java.util.Properties
 import scala.io.Source
 
 package object movies_project {
+  val logger: Logger = Logger.getLogger(getClass.getName)
+
   private def getSparkConf(configFilePath: String, appName: String): SparkConf = {
     val sparkConf = new SparkConf()
     val props: Properties = getSparkConfProperties(configFilePath)
@@ -43,7 +45,7 @@ package object movies_project {
   /** Used to instantiate and execute a method through reflection using the Scala Reflection API.
    * Reference: https://www.baeldung.com/scala/reflection-api
    *
-   * @param path Entity class path
+   * @param path       Entity class path
    * @param methodName Name of the method to be executed in the Entity class. Defaults to "execute"
    * @return Unit -> The execution of the method "execute" from the specific Entity class
    */

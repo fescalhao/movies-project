@@ -6,4 +6,7 @@ class ApplicationParams(arguments: Seq[String]) extends ScallopConf(arguments){
   var layer: ScallopOption[String] = opt[String](name = "layer", descr = "Data Layer", required = true)
   var entity: ScallopOption[String] = opt[String](name = "entity", descr = "Entity to be processed", required = true)
   verify()
+
+  val appName: String = s"movies_${layer()}_${entity()}"
+
 }

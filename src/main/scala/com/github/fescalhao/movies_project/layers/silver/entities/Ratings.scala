@@ -2,23 +2,14 @@ package com.github.fescalhao.movies_project.layers.silver.entities
 
 import com.github.fescalhao.movies_project.aws.s3.S3.readCSV
 import com.github.fescalhao.movies_project.generics.ApplicationParams
-import com.github.fescalhao.movies_project.getSparkSession
 import com.github.fescalhao.movies_project.layers.traits.{MovieEntity, MovieEntityObject}
-import org.apache.log4j.Logger
-import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.{DoubleType, IntegerType, LongType, StructField, StructType}
 
 import scala.io.Source
 
-class Ratings(params: ApplicationParams) extends MovieEntity {
-  override val logger: Logger = Logger.getLogger(getClass.getName)
+class Ratings(configFilePath: String, params: ApplicationParams) extends MasterEntity(configFilePath, params) with MovieEntity {
 
   override def execute(): Unit = {
-    val configFilePath = "silver/spark.conf"
-
-    logger.info("Initializing Spark Session...")
-    val spark: SparkSession = getSparkSession(configFilePath, "movies_silver_ratings")
-
     val path = "s3a://fescalhao-movies/bronze/ratings_small.csv"
 
     val ratingsDF = readCSV(spark, schema, path)
@@ -28,8 +19,8 @@ class Ratings(params: ApplicationParams) extends MovieEntity {
 }
 
 object Ratings extends MovieEntityObject {
-  override def apply(params: ApplicationParams): Ratings = {
-    val ratings = new Ratings(params)
+  override def apply(configFilePath: String, params: ApplicationParams): Ratings = {
+    val ratings = new Ratings(configFilePath, params)
     ratings.schema = getSchema
     ratings
   }
