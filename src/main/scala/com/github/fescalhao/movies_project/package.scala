@@ -10,7 +10,6 @@ import java.util.Properties
 import scala.io.Source
 
 package object movies_project {
-  val logger: Logger = Logger.getLogger(getClass.getName)
 
   private def getSparkConf(configFilePath: String, appName: String): SparkConf = {
     val sparkConf = new SparkConf()
@@ -25,7 +24,6 @@ package object movies_project {
 
   private def getSparkConfProperties(configFilePath: String): Properties = {
     val props = new Properties()
-    println(configFilePath)
     props.load(Source.fromResource(configFilePath).bufferedReader())
 
     props

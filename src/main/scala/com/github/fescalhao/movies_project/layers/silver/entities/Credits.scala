@@ -7,12 +7,11 @@ import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructT
 
 class Credits(configFilePath: String, params: ApplicationParams) extends MasterEntity(configFilePath, params) with MovieEntity {
   override def execute(): Unit = {
-    val path = "data/credits.csv"
-    //    val path = "s3a://fescalhao-movies/bronze/credits.csv"
+    val path = "s3a://fescalhao-movies/bronze/credits.csv"
 
-    val ratingsDF = readCSV(spark, schema, path)
+    val creditsDF = readCSV(spark, schema, path)
 
-    ratingsDF.show(truncate = false)
+    creditsDF.show(truncate = false)
   }
 
 }
