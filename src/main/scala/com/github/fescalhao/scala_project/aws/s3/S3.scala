@@ -1,4 +1,4 @@
-package com.github.fescalhao.movies_project.aws.s3
+package com.github.fescalhao.scala_project.aws.s3
 
 import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, SparkSession}

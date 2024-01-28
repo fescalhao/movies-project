@@ -1,12 +1,12 @@
-package com.github.fescalhao.movies_project.layers.silver.entities
+package com.github.fescalhao.scala_project.layers.silver.entities
 
-import com.github.fescalhao.movies_project.aws.s3.S3.readCSV
-import com.github.fescalhao.movies_project.generics.ApplicationParams
-import com.github.fescalhao.movies_project.layers.traits.{MovieEntity, MovieEntityObject}
+import com.github.fescalhao.scala_project.aws.s3.S3.readCSV
+import com.github.fescalhao.scala_project.generics.ApplicationParams
+import com.github.fescalhao.scala_project.layers.traits.{Entity, EntityObject}
 import org.apache.spark.sql.types.{IntegerType, StringType, StructField, StructType}
 
-class Credits(configFilePath: String, params: ApplicationParams) extends MasterEntity(configFilePath, params) with MovieEntity {
-  override def execute(): Unit = {
+class Credits(configFilePath: String, params: ApplicationParams) extends MasterEntity(configFilePath, params) with Entity {
+  def execute(): Unit = {
     val path = "s3a://fescalhao-movies/bronze/credits.csv"
 
     val creditsDF = readCSV(spark, schema, path)
@@ -16,8 +16,8 @@ class Credits(configFilePath: String, params: ApplicationParams) extends MasterE
 
 }
 
-object Credits extends MovieEntityObject {
-  override def apply(configFilePath: String, params: ApplicationParams): Credits = {
+object Credits extends EntityObject {
+  def apply(configFilePath: String, params: ApplicationParams): Credits = {
     val credits = new Credits(configFilePath, params)
     credits.schema = getSchema
     credits

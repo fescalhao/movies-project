@@ -6,7 +6,7 @@ ThisBuild / scalaVersion := "2.12.18"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "movies",
+    name := "spark_project",
     organization := "com.github.fescalhao"
   )
 
@@ -15,8 +15,11 @@ val sparkVersion = "3.5.0"
 val sparkDependencies = Seq(
   "org.apache.spark" %% "spark-core" % sparkVersion,
   "org.apache.spark" %% "spark-sql" % sparkVersion,
+  "io.delta" %% "delta-spark" % "3.0.0",
+  "io.delta" % "delta-storage" % "3.0.0",
   "com.amazonaws" % "aws-java-sdk-bundle" % "1.12.262", // % "provided"
   "org.apache.hadoop" % "hadoop-aws" % "3.3.4" // % "provided"
+
 )
 
 val testDependencies = Seq(

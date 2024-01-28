@@ -1,17 +1,18 @@
-package com.github.fescalhao.movies_project.layers.silver.entities
+package com.github.fescalhao.scala_project.layers.silver.entities
 
-import com.github.fescalhao.movies_project.generics.ApplicationParams
-import com.github.fescalhao.movies_project.getSparkSession
+import com.github.fescalhao.scala_project.generics.ApplicationParams
+import com.github.fescalhao.scala_project.{getCurrentTimeMillis, getSparkSession}
 import org.apache.hadoop.conf.Configuration
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
-import org.joda.time.{DateTime, DateTimeZone}
 
-class MasterEntity(configFilePath: String, params: ApplicationParams) {
+class MasterEntity(configFilePath: String, params: ApplicationParams, setAssumeRole: Boolean = true) {
   MasterEntity.logger.info("Initializing Spark Session...")
   val spark: SparkSession = getSparkSession(configFilePath, params.appName)
 
-  MasterEntity.setAssumeRole(spark, params)
+  MasterEntity.logger.info("Assuming AWS Role...")
+  if (setAssumeRole) MasterEntity.setAssumeRole(spark, params)
+
 }
 
 object MasterEntity {
@@ -23,7 +24,7 @@ object MasterEntity {
   private def setAssumeRole(spark: SparkSession, params: ApplicationParams): Unit = {
     val sparkConf: Configuration = spark.sparkContext.hadoopConfiguration
 
-    val sessionName = s"movies_${params.layer()}_${params.entity()}_${DateTime.now(DateTimeZone.UTC).getMillis}"
+    val sessionName = s"movies_${params.layer()}_${params.entity()}_${getCurrentTimeMillis()}"
 
     sparkConf.set("fs.s3a.assumed.role.session.name", sessionName)
     sparkConf.set("fs.s3a.access.key", params.aws_user_access_key())
