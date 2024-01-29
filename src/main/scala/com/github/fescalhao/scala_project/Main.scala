@@ -1,10 +1,10 @@
 package com.github.fescalhao.scala_project
 
-import com.github.fescalhao.scala_project.generics.ApplicationParams
-import com.github.fescalhao.scala_project.layers.bronze.Bronze
-import com.github.fescalhao.scala_project.layers.gold.Gold
-import com.github.fescalhao.scala_project.layers.silver.Silver
-import com.github.fescalhao.scala_project.layers.traits.LayerEntity
+import com.github.fescalhao.scala_project.core.ApplicationParams
+import com.github.fescalhao.scala_project.core.traits.LayerEntity
+import com.github.fescalhao.scala_project.movies.layers.bronze.Bronze
+import com.github.fescalhao.scala_project.movies.layers.gold.Gold
+import com.github.fescalhao.scala_project.movies.layers.silver.Silver
 
 object Main extends Serializable{
   private val layerMap: Map[String, LayerEntity] = Map(

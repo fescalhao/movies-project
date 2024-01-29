@@ -1,7 +1,5 @@
-package com.github.fescalhao.scala_project.layers.silver.entities
+package com.github.fescalhao.scala_project.core
 
-import com.github.fescalhao.scala_project.generics.ApplicationParams
-import com.github.fescalhao.scala_project.{getCurrentTimeMillis, getSparkSession}
 import org.apache.hadoop.conf.Configuration
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
@@ -10,13 +8,17 @@ class MasterEntity(configFilePath: String, params: ApplicationParams, setAssumeR
   MasterEntity.logger.info("Initializing Spark Session...")
   val spark: SparkSession = getSparkSession(configFilePath, params.appName)
 
-  MasterEntity.logger.info("Assuming AWS Role...")
-  if (setAssumeRole) MasterEntity.setAssumeRole(spark, params)
-
+  if (setAssumeRole) {
+    MasterEntity.logger.info("Assuming AWS Role...")
+    MasterEntity.setAssumeRole(spark, params)
+  }
 }
+
+
 
 object MasterEntity {
   val logger: Logger = Logger.getLogger(MasterEntity.getClass.getName)
+
   def apply(configFilePath: String, params: ApplicationParams): MasterEntity = {
     new MasterEntity(configFilePath, params)
   }

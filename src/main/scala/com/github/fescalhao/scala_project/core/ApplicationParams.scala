@@ -1,4 +1,4 @@
-package com.github.fescalhao.scala_project.generics
+package com.github.fescalhao.scala_project.core
 
 import org.rogach.scallop.ScallopConf
 

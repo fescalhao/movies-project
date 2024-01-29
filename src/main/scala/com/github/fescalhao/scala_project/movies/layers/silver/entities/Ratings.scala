@@ -1,10 +1,10 @@
-package com.github.fescalhao.scala_project.layers.silver.entities
+package com.github.fescalhao.scala_project.movies.layers.silver.entities
 
-import com.github.fescalhao.scala_project.aws.s3.S3.readCSV
-import com.github.fescalhao.scala_project.generics.ApplicationParams
-import com.github.fescalhao.scala_project.layers.traits.{Entity, EntityObject}
+import com.github.fescalhao.scala_project.core.aws.s3.S3.readCSV
+import com.github.fescalhao.scala_project.core.{ApplicationParams, MasterEntity}
+import com.github.fescalhao.scala_project.core.traits.{Entity, EntityObject}
+import com.github.fescalhao.scala_project.movies.layers.silver.schemas.RatingsSchema
 import org.apache.log4j.Logger
-import org.apache.spark.sql.types.{DoubleType, IntegerType, LongType, StructField, StructType}
 
 class Ratings(configFilePath: String, params: ApplicationParams) extends MasterEntity(configFilePath, params) with Entity {
   val logger: Logger = Logger.getLogger(getClass.getName)
@@ -16,8 +16,6 @@ class Ratings(configFilePath: String, params: ApplicationParams) extends MasterE
     logger.info(s"Reading ${params.entity().capitalize} CSV file")
     val ratingsDF = readCSV(spark, schema, sourcePath)
 
-    ratingsDF.show(truncate = false)
-
     ratingsDF.write
       .format("delta")
       .mode("overwrite")
@@ -28,18 +26,7 @@ class Ratings(configFilePath: String, params: ApplicationParams) extends MasterE
 object Ratings extends EntityObject {
   def apply(configFilePath: String, params: ApplicationParams): Ratings = {
     val ratings = new Ratings(configFilePath, params)
-    ratings.schema = getSchema
+    ratings.schema = RatingsSchema.bronzeSchema
     ratings
-  }
-
-  override def getSchema: Option[StructType] = {
-    Option(
-      StructType(List(
-        StructField("userId", IntegerType, nullable = false),
-        StructField("movieId", IntegerType, nullable = false),
-        StructField("rating", DoubleType, nullable = true),
-        StructField("timestamp", LongType, nullable = true)
-      ))
-    )
   }
 }

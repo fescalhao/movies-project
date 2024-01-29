@@ -1,4 +1,4 @@
-package com.github.fescalhao
+package com.github.fescalhao.scala_project
 
 import org.apache.spark.SparkConf
 import org.apache.spark.sql.SparkSession
@@ -7,7 +7,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 import java.util.Properties
 import scala.io.Source
 
-package object scala_project {
+package object core {
 
   private def getSparkConf(configFilePath: String, appName: String): SparkConf = {
     val sparkConf = new SparkConf()

@@ -1,9 +1,12 @@
-package com.github.fescalhao.scala_project.layers.traits
+package com.github.fescalhao.scala_project.core.traits
 
-import com.github.fescalhao.scala_project.generics.ApplicationParams
+import com.github.fescalhao.scala_project.core.ApplicationParams
+import org.apache.log4j.Logger
 import org.apache.spark.sql.types.StructType
 
 trait Entity {
+  val logger: Logger
+
   var schema: Option[StructType] = None
 
   def execute(): Unit
@@ -11,8 +14,6 @@ trait Entity {
 
 trait EntityObject {
   def apply(configFilePath: String, params: ApplicationParams): Entity
-
-  def getSchema: Option[StructType] = None
 }
 
 
