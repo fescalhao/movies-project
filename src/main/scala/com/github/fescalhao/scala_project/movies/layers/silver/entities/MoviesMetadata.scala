@@ -12,11 +12,11 @@ class MoviesMetadata(configFilePath: String, params: ApplicationParams) extends 
   override val logger: Logger = Logger.getLogger(getClass.getName)
 
   override def execute(): Unit = {
-    val sourcePath = s"$baseSourcePath/${params.entity()}_small.csv"
+    val sourcePath = s"$baseSourcePath/${params.entity()}.csv"
     val targetPath = s"$baseTargetPath/${params.entity()}"
 
     logger.info(s"Reading ${params.entity().capitalize} CSV file")
-    val moviesMetadataDF = readCSV(spark, schema, sourcePath)
+    val moviesMetadataDF = readCSV(spark, schema, sourcePath, csvReadOptions)
 
     val moviesMetadataNewSchemaDF = moviesMetadataDF
       .withColumn("belongs_to_collection", from_json(col("belongs_to_collection"), belongsToCollectionSchema))

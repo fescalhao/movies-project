@@ -14,7 +14,7 @@ class Links(configFilePath: String, params: ApplicationParams) extends MasterEnt
     val targetPath = s"$baseTargetPath/${params.entity()}"
 
     logger.info(s"Reading ${params.entity().capitalize} CSV file")
-    val linksDF = readCSV(spark, schema, sourcePath)
+    val linksDF = readCSV(spark, schema, sourcePath, csvReadOptions)
 
     linksDF.show(truncate = false)
   }

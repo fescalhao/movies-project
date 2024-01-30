@@ -16,7 +16,7 @@ class Credits(configFilePath: String, params: ApplicationParams) extends MasterE
     val sourcePath = s"$baseSourcePath/${params.entity()}.csv"
     val targetPath = s"$baseTargetPath/${params.entity()}"
 
-    val creditsDF = readCSV(spark, schema, sourcePath)
+    val creditsDF = readCSV(spark, schema, sourcePath, csvReadOptions)
 
     val creditsNewSchemaDF = creditsDF
       .withColumn("cast", from_json(col("cast"), castSchema))

@@ -15,7 +15,7 @@ class Keywords(configFilePath: String, params: ApplicationParams) extends Master
     val targetPath = s"$baseTargetPath/${params.entity()}"
 
     logger.info(s"Reading ${params.entity().capitalize} CSV file")
-    val keywordsDF = readCSV(spark, schema, sourcePath)
+    val keywordsDF = readCSV(spark, schema, sourcePath, csvReadOptions)
 
     keywordsDF.show(truncate = false)
   }
