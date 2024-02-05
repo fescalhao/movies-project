@@ -12,9 +12,11 @@ class MasterEntity(configFilePath: String, params: ApplicationParams, setAssumeR
     MasterEntity.logger.info("Assuming AWS Role...")
     MasterEntity.setAssumeRole(spark, params)
   }
+
+  def setSparkConfs(conf: Map[String, String]): Unit = {
+    conf.foreach(entry => spark.conf.set(entry._1, entry._2))
+  }
 }
-
-
 
 object MasterEntity {
   val logger: Logger = Logger.getLogger(MasterEntity.getClass.getName)
@@ -26,7 +28,7 @@ object MasterEntity {
   private def setAssumeRole(spark: SparkSession, params: ApplicationParams): Unit = {
     val sparkConf: Configuration = spark.sparkContext.hadoopConfiguration
 
-    val sessionName = s"movies_${params.layer()}_${params.entity()}_${getCurrentTimeMillis()}"
+    val sessionName = s"${params.project()}_${params.layer()}_${params.entity()}_${getCurrentTimeMillis()}"
 
     sparkConf.set("fs.s3a.assumed.role.session.name", sessionName)
     sparkConf.set("fs.s3a.access.key", params.aws_user_access_key())

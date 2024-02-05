@@ -12,6 +12,7 @@ object Main extends Serializable{
     "silver" -> Silver,
     "gold" -> Gold
   )
+
   def main(args: Array[String]): Unit = {
     val params = new ApplicationParams(args)
 

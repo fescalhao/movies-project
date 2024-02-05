@@ -4,6 +4,8 @@ import com.github.fescalhao.scala_project.core.ApplicationParams
 import com.github.fescalhao.scala_project.core.traits.{EntityObject, LayerEntity}
 import com.github.fescalhao.scala_project.movies.layers.silver.entities.{Credits, Keywords, Links, MoviesMetadata, Ratings}
 
+import java.util.Date
+
 object Silver extends LayerEntity {
 
   val entityMap: Map[String, EntityObject] = Map(
