@@ -1,14 +1,14 @@
 package com.github.fescalhao.scala_project.movies.layers.silver.entities
 
 import com.github.fescalhao.scala_project.core.{ApplicationParams, MasterEntity}
-import com.github.fescalhao.scala_project.core.aws.s3.S3.readCSV
+import com.github.fescalhao.scala_project.core.aws.s3.S3.{readCSV, writeParquet}
 import com.github.fescalhao.scala_project.core.traits.{Entity, EntityObject}
-import com.github.fescalhao.scala_project.movies.layers.silver.schemas.CreditsSchema._
+import com.github.fescalhao.scala_project.movies.layers.silver.schemas.CreditsSchema.bronzeSchema
 import com.github.fescalhao.scala_project.movies.layers.silver.traits.MovieSilverEntity
+import com.github.fescalhao.scala_project.movies.layers.silver.transformations.CreditsTransformation
 import org.apache.log4j.Logger
-import org.apache.spark.sql.functions.{col, from_json}
 
-class Credits(configFilePath: String, params: ApplicationParams) extends MasterEntity(configFilePath, params, false) with Entity with MovieSilverEntity {
+class Credits(configFilePath: String, params: ApplicationParams) extends MasterEntity(configFilePath, params) with Entity with MovieSilverEntity {
 
   override val logger: Logger = Logger.getLogger(getClass.getName)
 
@@ -18,11 +18,13 @@ class Credits(configFilePath: String, params: ApplicationParams) extends MasterE
 
     val creditsDF = readCSV(spark, schema, sourcePath, csvReadOptions)
 
-    val creditsNewSchemaDF = creditsDF
-      .withColumn("cast", from_json(col("cast"), castSchema))
-      .withColumn("crew", from_json(col("crew"), crewSchema))
+    creditsDF.show(25, truncate = false)
 
-    creditsNewSchemaDF.show(25, truncate = false)
+    val transformedCreditsDF =  CreditsTransformation.transformCredits(creditsDF)
+
+    transformedCreditsDF.show(25, truncate = false)
+
+    writeParquet(transformedCreditsDF, "overwrite", targetPath)
   }
 }
 

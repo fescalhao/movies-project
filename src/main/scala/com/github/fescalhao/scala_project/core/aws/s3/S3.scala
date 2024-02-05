@@ -1,14 +1,15 @@
 package com.github.fescalhao.scala_project.core.aws.s3
 
 import org.apache.spark.sql.types.StructType
-import org.apache.spark.sql.{DataFrame, DataFrameReader, SparkSession}
+import org.apache.spark.sql.{DataFrame, DataFrameReader, DataFrameWriterV2, SparkSession}
 
 object S3 {
-  def readCSV[A: StringOrList](spark: SparkSession,
-              schema: Option[StructType],
-              paths: A,
-              options: Map[String, String] = Map()
-             ): DataFrame = {
+  def readCSV[A: StringOrList](
+                                spark: SparkSession,
+                                schema: Option[StructType],
+                                paths: A,
+                                options: Map[String, String] = Map()
+                              ): DataFrame = {
 
     val dfr = spark.read.format("csv")
 
@@ -22,8 +23,19 @@ object S3 {
     loadFiles(dfr, paths)
   }
 
-  def readParquet() = {
+  def writeParquet(
+                    df: DataFrame,
+                    mode: String,
+                    targetPath: String,
+                    options: Map[String, String] = Map()
+                  ): Unit = {
+    val dfw = df.write
+      .format("parquet")
+      .mode(mode)
 
+    options.foreach(op => dfw.option(op._1, op._2))
+
+    dfw.save(targetPath)
   }
 
   private def loadFiles[B: StringOrList](dfr: DataFrameReader, paths: B): DataFrame = {
