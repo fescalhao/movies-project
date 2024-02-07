@@ -27,15 +27,19 @@ package object core {
     props
   }
 
-  def getSparkSession(configFilePath: String, appName: String): SparkSession = {
+  def getSparkSession(configFilePath: String, appName: String, enableHive: Boolean = false): SparkSession = {
     val sparkConf: SparkConf = getSparkConf(
       configFilePath = configFilePath,
       appName = appName
     )
 
-    SparkSession.builder()
+    val builder = SparkSession.builder()
       .config(sparkConf)
-      .getOrCreate()
+
+    if (enableHive) { builder.enableHiveSupport() }
+
+    builder.getOrCreate()
+
   }
 
   def getCurrentTimeMillis(dateTimeZone: DateTimeZone = DateTimeZone.UTC): Long = DateTime.now(dateTimeZone).getMillis

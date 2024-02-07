@@ -4,9 +4,9 @@ import org.apache.hadoop.conf.Configuration
 import org.apache.log4j.Logger
 import org.apache.spark.sql.SparkSession
 
-class MasterEntity(configFilePath: String, params: ApplicationParams, setAssumeRole: Boolean = true) {
+class MasterEntity(configFilePath: String, params: ApplicationParams, setAssumeRole: Boolean = true, enableHive: Boolean = false) {
   MasterEntity.logger.info("Initializing Spark Session...")
-  val spark: SparkSession = getSparkSession(configFilePath, params.appName)
+  val spark: SparkSession = getSparkSession(configFilePath, params.appName, enableHive)
 
   if (setAssumeRole) {
     MasterEntity.logger.info("Assuming AWS Role...")

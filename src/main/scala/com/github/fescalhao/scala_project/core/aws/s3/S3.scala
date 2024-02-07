@@ -5,19 +5,19 @@ import org.apache.spark.sql.{DataFrame, DataFrameReader, DataFrameWriter, SparkS
 
 case class BucketBy(numBuckets: Int, colName: String, colNames: String*)
 
-sealed trait RichStringType[T]
+sealed trait StringOrList[T]
 
-object RichStringType {
-  implicit val listInstance: RichStringType[List[String]] =
-    new RichStringType[List[String]] {}
-  implicit val strInstance: RichStringType[String] =
-    new RichStringType[String] {}
-  implicit val nilInstance: RichStringType[Nil.type] =
-    new RichStringType[Nil.type] {}
+object StringOrList {
+  implicit val listInstance: StringOrList[List[String]] =
+    new StringOrList[List[String]] {}
+  implicit val strInstance: StringOrList[String] =
+    new StringOrList[String] {}
+  implicit val nilInstance: StringOrList[Nil.type] =
+    new StringOrList[Nil.type] {}
 }
 
 object S3 {
-  def readCSV[A: RichStringType](
+  def readCSV[A: StringOrList](
                                  spark: SparkSession,
                                  schema: Option[StructType],
                                  paths: A,
@@ -36,7 +36,7 @@ object S3 {
     loadFiles(dfr, paths)
   }
 
-  def writeDelta[P: RichStringType](
+  def writeDelta[P: StringOrList](
                                     df: DataFrame,
                                     targetPath: String,
                                     mode: String = "overwrite",
@@ -49,7 +49,6 @@ object S3 {
       .mode(mode)
 
     partitionDataframe(dfw, partitionBy)
-
     sortDataframe(dfw, sortBy)
 
     options.foreach(op => dfw.option(op._1, op._2))
@@ -57,7 +56,7 @@ object S3 {
     dfw.save(targetPath)
   }
 
-  def writeDeltaAsTable[P: RichStringType](
+  def writeDeltaAsTable[P: StringOrList](
                          df: DataFrame,
                          tableName: String,
                          mode: String = "overwrite",
@@ -79,22 +78,23 @@ object S3 {
     dfw.saveAsTable(tableName)
   }
 
-  private def loadFiles[L: RichStringType](dfr: DataFrameReader, paths: L): DataFrame = {
+  private def loadFiles[L: StringOrList](dfr: DataFrameReader, paths: L): DataFrame = {
     paths match {
       case p: String => dfr.load(p)
       case p: List[String] => dfr.load(p: _*)
     }
   }
 
-  private def partitionDataframe[P: RichStringType, T](dfw: DataFrameWriter[T], partitionColumns: P): DataFrameWriter[T] = {
+  private def partitionDataframe[P: StringOrList, T](dfw: DataFrameWriter[T], partitionColumns: P): DataFrameWriter[T] = {
     partitionColumns match {
       case p: String => dfw.partitionBy(p)
       case p: List[String] => dfw.partitionBy(p: _*)
     }
   }
 
-  private def sortDataframe[P: RichStringType, T](dfw: DataFrameWriter[T], sortColumns: P): DataFrameWriter[T] = {
+  private def sortDataframe[P: StringOrList, T](dfw: DataFrameWriter[T], sortColumns: P): DataFrameWriter[T] = {
     sortColumns match {
+      case _: List[Nil.type ] => dfw
       case s: String => dfw.sortBy(s)
       case s: List[String] =>
         if (s.length > 1) {
