@@ -1,7 +1,7 @@
 package com.github.fescalhao.scala_project.movies.layers.silver.entities
 
 import com.github.fescalhao.scala_project.core.{ApplicationParams, MasterEntity}
-import com.github.fescalhao.scala_project.core.aws.s3.S3.readCSV
+import com.github.fescalhao.scala_project.core.aws.s3.S3.{readCSV, writeDelta}
 import com.github.fescalhao.scala_project.core.traits.{Entity, EntityObject}
 import com.github.fescalhao.scala_project.movies.layers.silver.schemas.LinksSchema
 import com.github.fescalhao.scala_project.movies.layers.silver.traits.MovieSilverEntity
@@ -16,7 +16,8 @@ class Links(configFilePath: String, params: ApplicationParams) extends MasterEnt
     logger.info(s"Reading ${params.entity().capitalize} CSV file")
     val linksDF = readCSV(spark, schema, sourcePath, csvReadOptions)
 
-    linksDF.show(truncate = false)
+    logger.info(s"Saving files in Silver layer in the path $targetPath")
+    writeDelta(linksDF, targetPath)
   }
 }
 

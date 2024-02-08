@@ -4,41 +4,40 @@ import org.apache.spark.sql.types.{ArrayType, BooleanType, FloatType, IntegerTyp
 
 object MoviesMetadataSchema {
   val bronzeSchema: Option[StructType] = Option(
-      StructType(List(
-        StructField("adult", BooleanType, nullable = false),
-        StructField("belongs_to_collection", StringType),
-        StructField("budget", IntegerType),
-        StructField("genres", StringType),
-        StructField("homepage", StringType),
-        StructField("id", IntegerType, nullable = false),
-        StructField("imdb_id", StringType),
-        StructField("original_language", StringType),
-        StructField("original_title", StringType),
-        StructField("overview", StringType),
-        StructField("popularity", StringType),
-        StructField("poster_path", StringType),
-        StructField("production_companies", StringType),
-        StructField("production_countries", StringType),
-        StructField("release_date", StringType),
-        StructField("revenue", IntegerType),
-        StructField("runtime", FloatType),
-        StructField("spoken_languages", StringType),
-        StructField("status", StringType),
-        StructField("tagline", StringType),
-        StructField("title", StringType, nullable = false),
-        StructField("video", BooleanType),
-        StructField("vote_average", FloatType),
-        StructField("vote_count", IntegerType)
-      ))
-    )
-
-  val belongsToCollectionSchema: ArrayType = ArrayType(
     StructType(List(
+      StructField("adult", BooleanType, nullable = false),
+      StructField("belongs_to_collection", StringType),
+      StructField("budget", IntegerType),
+      StructField("genres", StringType),
+      StructField("homepage", StringType),
       StructField("id", IntegerType, nullable = false),
-      StructField("name", StringType, nullable = false),
-      StructField("poster_path", StringType, nullable = false),
-      StructField("backdrop_path", StringType, nullable = false),
-    )), containsNull = true
+      StructField("imdb_id", StringType),
+      StructField("original_language", StringType),
+      StructField("original_title", StringType),
+      StructField("overview", StringType),
+      StructField("popularity", StringType),
+      StructField("poster_path", StringType),
+      StructField("production_companies", StringType),
+      StructField("production_countries", StringType),
+      StructField("release_date", StringType),
+      StructField("revenue", IntegerType),
+      StructField("runtime", FloatType),
+      StructField("spoken_languages", StringType),
+      StructField("status", StringType),
+      StructField("tagline", StringType),
+      StructField("title", StringType, nullable = false),
+      StructField("video", BooleanType),
+      StructField("vote_average", FloatType),
+      StructField("vote_count", IntegerType)
+    ))
+  )
+
+  val belongsToCollectionSchema: StructType = StructType(List(
+    StructField("id", IntegerType, nullable = false),
+    StructField("name", StringType, nullable = false),
+    StructField("poster_path", StringType, nullable = false),
+    StructField("backdrop_path", StringType, nullable = false),
+  )
   )
 
   val genresSchema: ArrayType = ArrayType(

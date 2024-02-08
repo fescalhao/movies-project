@@ -17,15 +17,22 @@ class Credits(configFilePath: String, params: ApplicationParams) extends MasterE
     val sourcePath = s"$baseSourcePath/${params.entity()}.csv"
     val targetPath = s"$baseTargetPath/${params.entity()}"
 
+    logger.info(s"Reading ${params.entity().capitalize} CSV file")
     val creditsDF = readCSV(spark, schema, sourcePath, csvReadOptions)
 
+    logger.info(s"Applying transformations...")
     val transformedCreditsDF =  CreditsTransformation.transformCredits(creditsDF).cache()
 
     val castDF = transformedCreditsDF.select(col("id"), explode(col("cast")).alias("cast"))
     val crewDF = transformedCreditsDF.select(col("id"), explode(col("crew")).alias("crew"))
 
+    logger.info(s"Saving files in Silver layer in the path $targetPath/complete")
     writeDelta(transformedCreditsDF, s"$targetPath/complete")
+
+    logger.info(s"Saving files in Silver layer in the path $targetPath/cast")
     writeDelta(castDF, s"$targetPath/cast")
+
+    logger.info(s"Saving files in Silver layer in the path $targetPath/crew")
     writeDelta(crewDF, s"$targetPath/crew")
   }
 }

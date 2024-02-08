@@ -1,12 +1,11 @@
 package com.github.fescalhao.scala_project.movies.layers.silver.entities
 
 import com.github.fescalhao.scala_project.core.{ApplicationParams, MasterEntity}
-import com.github.fescalhao.scala_project.core.aws.s3.S3.readCSV
+import com.github.fescalhao.scala_project.core.aws.s3.S3.{readCSV, writeDelta}
 import com.github.fescalhao.scala_project.core.traits.{Entity, EntityObject}
 import com.github.fescalhao.scala_project.movies.layers.silver.schemas.MoviesMetadataSchema._
 import com.github.fescalhao.scala_project.movies.layers.silver.traits.MovieSilverEntity
 import org.apache.log4j.Logger
-import org.apache.spark.sql.functions.{col, from_json}
 
 class MoviesMetadata(configFilePath: String, params: ApplicationParams) extends MasterEntity(configFilePath, params) with Entity with MovieSilverEntity {
   override val logger: Logger = Logger.getLogger(getClass.getName)
@@ -18,14 +17,11 @@ class MoviesMetadata(configFilePath: String, params: ApplicationParams) extends 
     logger.info(s"Reading ${params.entity().capitalize} CSV file")
     val moviesMetadataDF = readCSV(spark, schema, sourcePath, csvReadOptions)
 
-    val moviesMetadataNewSchemaDF = moviesMetadataDF
-      .withColumn("belongs_to_collection", from_json(col("belongs_to_collection"), belongsToCollectionSchema))
-      .withColumn("genres", from_json(col("genres"), genresSchema))
-      .withColumn("production_companies", from_json(col("production_companies"), productionCompaniesSchema))
-      .withColumn("production_countries", from_json(col("production_countries"), productionCountriesSchema))
-      .withColumn("spoken_languages", from_json(col("spoken_languages"), spokenLanguagesSchema))
+    logger.info(s"Applying transformations...")
+    val transformedMoviesMetadataDF = MoviesMetadataTransformation.transformMoviesMetadata(moviesMetadataDF)
 
-    moviesMetadataNewSchemaDF.show(25, truncate = false)
+    logger.info(s"Saving files in Silver layer in the path $targetPath")
+    writeDelta(transformedMoviesMetadataDF, targetPath)
   }
 }
 

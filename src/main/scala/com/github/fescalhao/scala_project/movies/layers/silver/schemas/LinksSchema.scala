@@ -7,7 +7,7 @@ object LinksSchema {
       StructType(List(
         StructField("movieId", IntegerType, nullable = false),
         StructField("imdbId", IntegerType, nullable = true),
-        StructField("tmdbId", IntegerType, nullable = false)
+        StructField("tmdbId", IntegerType, nullable = true)
       ))
     )
 }
