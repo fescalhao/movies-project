@@ -5,6 +5,7 @@ import com.github.fescalhao.scala_project.core.aws.s3.S3.{readCSV, writeDelta}
 import com.github.fescalhao.scala_project.core.traits.{Entity, EntityObject}
 import com.github.fescalhao.scala_project.movies.layers.silver.schemas.MoviesMetadataSchema._
 import com.github.fescalhao.scala_project.movies.layers.silver.traits.MovieSilverEntity
+import com.github.fescalhao.scala_project.movies.layers.silver.transformations.MoviesMetadataTransformation
 import org.apache.log4j.Logger
 
 class MoviesMetadata(configFilePath: String, params: ApplicationParams) extends MasterEntity(configFilePath, params) with Entity with MovieSilverEntity {

@@ -17,6 +17,7 @@ package object core {
       sparkConf.set(k.toString, v.toString)
     })
 
+//    sparkConf.set("spark.sql.session.timeZone", "UTC")
     sparkConf.setAppName(appName)
   }
 

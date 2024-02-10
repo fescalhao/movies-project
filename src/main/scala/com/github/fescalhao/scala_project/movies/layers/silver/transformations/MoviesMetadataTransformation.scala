@@ -1,6 +1,6 @@
-package com.github.fescalhao.scala_project.movies.layers.silver.entities
+package com.github.fescalhao.scala_project.movies.layers.silver.transformations
 
-import com.github.fescalhao.scala_project.movies.layers.silver.schemas.MoviesMetadataSchema.{belongsToCollectionSchema, genresSchema, productionCompaniesSchema, productionCountriesSchema, spokenLanguagesSchema}
+import com.github.fescalhao.scala_project.movies.layers.silver.schemas.MoviesMetadataSchema._
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.{col, from_json, regexp_replace, to_date}
 

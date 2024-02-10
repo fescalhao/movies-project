@@ -20,6 +20,8 @@ class Ratings(configFilePath: String, params: ApplicationParams) extends MasterE
     logger.info(s"Applying transformations...")
     val transformedRatingsDF = RatingsTransformation.transformRatings(ratingsDF)
 
+    transformedRatingsDF.show(truncate = false)
+
     logger.info(s"Saving files in Silver layer in the path $targetPath")
     writeDelta(transformedRatingsDF, targetPath)
   }
