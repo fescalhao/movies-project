@@ -1,4 +1,4 @@
-//import sbtassembly.AssemblyPlugin.autoImport.assemblyJarName
+
 
 import scala.collection.immutable.Seq
 
@@ -13,7 +13,7 @@ lazy val root = (project in file("."))
     name := "spark_project",
     organization := "com.github.fescalhao",
     assembly / mainClass := Some("com.github.fescalhao.spark_project.Main"),
-    assembly / assemblyJarName := "spark_test.jar"
+    assembly / assemblyJarName := name.value + "_"  + sparkVersion + "_" + version.value + "." + "jar"
   )
 
 val sparkVersion = "3.5.0"
